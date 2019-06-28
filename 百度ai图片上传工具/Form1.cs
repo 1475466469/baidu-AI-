@@ -237,16 +237,41 @@ namespace 百度ai图片上传工具
             
 
 
-                           
-
-
-
                         }
                         catch (Exception ex)
                         {
 
-                sw.WriteLine(fGoodsCode + "找不到：" + FullName);
-                            Console.WriteLine(ex);
+
+
+                             sw.WriteLine(fGoodsCode + "找不到：" + FullName);
+
+                //文件找不到写入数据库
+
+                string sql_text = "insert into BaiduUpload_service values(@id,@fGoodsCode,@path,@workDate)";
+
+                SqlParameter[] parms = new SqlParameter[]
+                {
+                            new SqlParameter("@id",Guid.NewGuid().ToString()),
+                             new SqlParameter("@fGoodsCode",fGoodsCode ),
+                               new SqlParameter("@path", FullName),
+                                new SqlParameter("@workDate",DateTime.Now)
+                 };
+                int count = SqlHelper.SqlHelper.ExcuteNonQuery(sql_text, parms);
+
+                if (count > 0)
+                {
+                    sw.WriteLine(fGoodsCode + "没有找到图片文件插入到数据库");
+                }
+                else
+                {
+                    sw.WriteLine(fGoodsCode + "没有找到图片文件插入到数据库失败");
+                }
+
+
+
+
+
+                Console.WriteLine(ex);
                             Console.WriteLine(FullName + "上传失败");
                         }
 
